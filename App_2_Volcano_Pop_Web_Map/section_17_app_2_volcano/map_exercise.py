@@ -34,7 +34,7 @@ map = folium.Map(location = [38.58, -99.09],
                  tiles="Stamen Terrain"
                  )
 
-fg = folium.FeatureGroup(name="My Map")
+fg = folium.FeatureGroup(name="Volcanoes") #creats a feature layer that will house volcano data
 
 for i,v in volcanoes.iterrows():
     #iframe = folium.IFrame(html=html %str(v["ELEV"]), width=200, height=100) #html version basic
@@ -49,12 +49,18 @@ for i,v in volcanoes.iterrows():
                             #icon=folium.Icon(color=elev_color(v["ELEV"])) #marker class
                             )
               )
+    
+mg = folium.FeatureGroup(name="Country Population")    
 
-fg.add_child(folium.GeoJson(data=(open("world.json", "r", encoding='utf-8-sig').read())))
+mg.add_child(folium.GeoJson(data=open("world.json", "r", encoding='utf-8-sig').read(),
+             style_function=lambda x: {'fillColor':'green' if x['properties']['POP2005'] < 10000000 
+                                       else 'orange' if 10000000 <= x['properties']['POP2005'] < 20000000 else 'red'}
+             ))
+
 
 map.add_child(fg)
-
-
+map.add_child(mg)
+map.add_child(folium.LayerControl())
 
 #map.save("Map1.html")
 map.save("Map1_html_basic.html")
